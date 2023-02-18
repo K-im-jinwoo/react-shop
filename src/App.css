@@ -5,6 +5,14 @@
   background-position: center;
 }
 
+.nav-home {
+  padding: 5px;
+}
+
+.nav-detail {
+  padding: 5px;
+}
+
 .App {
   text-align: center;
 }

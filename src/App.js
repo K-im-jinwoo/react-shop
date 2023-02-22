@@ -32,7 +32,9 @@ function App() {
               {
                 shoes.map((a, i) => {
                   return (
-                    <List shoes={shoes[i]} i={i + 1}></List>
+                    <List
+                      shoes={shoes[i]} i={i + 1}
+                    ></List>
                   )
                 })
               }
@@ -75,8 +77,13 @@ function Event() {
 
 
 function List(props) {
+  let navigate = useNavigate();
+
   return (    
-  <div className="col-md-4">
+    <div
+      onClick={()=>{navigate('/detail/'+props.i)}}
+      className="col-md-4"
+    >
       <img src={"https://codingapple1.github.io/shop/shoes" + props.i + ".jpg"} alt="" width='80%' />
       <h4>{props.shoes.title}</h4>
       <p>{props.shoes.price}</p>

@@ -1,13 +1,19 @@
-import { useState } from 'react';
+import { createContext, useState } from 'react';
 import { Container, Navbar, Nav } from 'react-bootstrap'
 import './App.css';
 import data from './data.js';
 import Detail from './routes/detail.js'
 import { Routes, Route, Link, useNavigate, Outlet } from 'react-router-dom'
+import axios from 'axios';
+
+export let Context1 = createContext()
 
 function App() {
 
-  let [shoes] = useState(data)
+  let [shoes, setShoes] = useState(data);
+  let [count, setCount] = useState(0);
+  let [loading, setLoading] = useState(true);
+  let [재고] = useState([10, 11, 12]);
   let navigate = useNavigate();
 
   return (
@@ -42,7 +48,10 @@ function App() {
           </div>
         </></div>} />
         <Route path="/detail/:id" element={
-          <Detail shoes={shoes}></Detail>} />
+          <Context1.Provider value={{ 재고 }}>
+            <Detail shoes={shoes}></Detail>
+          </Context1.Provider>
+          } />
         <Route path='*' element={<div>없는 페이지요</div>} />
         <Route path='/about' element={<About />} >
           <Route path="member" element={<div>멤버임</div> } />
@@ -53,7 +62,42 @@ function App() {
           <Route path='two' element={<div>생일기념 쿠폰받기</div>} />
         </Route>
       </Routes>
-      
+      {
+        loading === false ?
+          <div>로딩중입니다.</div> : null
+      }
+      <button onClick={() => {
+        setLoading(!loading);
+        if (count === 0) {
+          axios.get('https://codingapple1.github.io/shop/data2.json')
+            .then((result) => {
+              let copy = [...shoes, ...result.data];
+              setCount(count+1)
+              setShoes(copy)
+              setLoading(true);
+            })
+            .catch(() => {
+              console.log('실패')
+              setLoading(true);
+          })
+        } else if (count === 1) {
+          axios.get('https://codingapple1.github.io/shop/data3.json')
+            .then((result) => {
+              console.log(result.data)
+              let copy = [...shoes, ...result.data];
+              setCount(count + 1)
+              setShoes(copy)
+              setLoading(true);
+            })
+            .catch(() => {
+              console.log('실패')
+              setLoading(true);
+            })
+        } else if (count >= 2) {
+          alert('더 상품이 없습니다.')
+          setLoading(true);
+        }
+      }}>더보기</button>
     </div>
   );
 }
@@ -81,7 +125,7 @@ function List(props) {
 
   return (    
     <div
-      onClick={()=>{navigate('/detail/'+props.i)}}
+      onClick={()=>{navigate('/detail/'+props.shoes.id )}}
       className="col-md-4"
     >
       <img src={"https://codingapple1.github.io/shop/shoes" + props.i + ".jpg"} alt="" width='80%' />

@@ -1,10 +1,13 @@
 import { useEffect, useState, useContext } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { Nav } from 'react-bootstrap'
 import { Context1 } from "./../App.js";
+import { addItem } from "../store.js";
+import { useDispatch } from "react-redux";
 
 function Detail(props) {
 
+  let navigate = useNavigate() 
   let {재고} = useContext(Context1)
 
   let [탭, 탭변경] = useState(0);
@@ -15,6 +18,7 @@ function Detail(props) {
     return x.id == id
   });
   let [fade, setFade] = useState('');
+  let dispatch = useDispatch();
 
   useEffect(() => {
     let a = setTimeout(() => { setAlert(!alerts) }, 2000)
@@ -57,7 +61,12 @@ function Detail(props) {
             <h4 className="pt-5">{찾은상품.title}</h4>
             <p>{찾은상품.content}</p>
             <p>{찾은상품.price}</p>
-            <button className="btn btn-danger">주문하기</button>
+            <button className="btn btn-danger"
+              onClick={() => {
+                dispatch(addItem({ id: 찾은상품.id, name: 찾은상품.title , count: 0 }))
+                navigate('/cart')
+            }}
+            >주문하기</button>
           </div>
         </div>
 

@@ -5,6 +5,7 @@ import data from './data.js';
 import Detail from './routes/detail.js'
 import { Routes, Route, Link, useNavigate, Outlet } from 'react-router-dom'
 import axios from 'axios';
+import Cart from './routes/Cart.js';
 
 export let Context1 = createContext()
 
@@ -52,6 +53,9 @@ function App() {
             <Detail shoes={shoes}></Detail>
           </Context1.Provider>
           } />
+        
+        <Route path='/cart' element={<Cart />} />
+
         <Route path='*' element={<div>없는 페이지요</div>} />
         <Route path='/about' element={<About />} >
           <Route path="member" element={<div>멤버임</div> } />
@@ -62,6 +66,8 @@ function App() {
           <Route path='two' element={<div>생일기념 쿠폰받기</div>} />
         </Route>
       </Routes>
+
+
       {
         loading === false ?
           <div>로딩중입니다.</div> : null

@@ -40,8 +40,9 @@ function Cart() {
                     </button>
                   </td>
                   <td>
-                    <button onClick={() => {
-                      dispatch(deleteItem(0))
+                    <button onClick={(e) => {
+                      let b = e.target.parentElement;
+                      dispatch(deleteItem(b.parentElement))
                     }}>
                       삭제
                     </button>

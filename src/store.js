@@ -20,15 +20,16 @@ let cart = createSlice({
         state[번호].count = state[번호].count + 1
     },
     addItem(state, action) {
-      let 번호 = state.findIndex((a) => { return a.id === action.payload })
-      if (state in action.payload) {
+      let 번호 = state.findIndex((a) => { return a.id === action.payload.id })
+      console.log(번호)
+      if (번호 !== -1) {
         state[번호].count = state[번호].count + 1
-      } else {
+      } else if(번호 === -1) {
         state.push(action.payload);
       }
     },
     deleteItem(state, action) {
-      delete state[action.payload]
+      action.payload.remove()
     }
   }
 })

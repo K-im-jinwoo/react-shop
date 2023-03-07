@@ -1,6 +1,6 @@
 import { useEffect, useState, useContext } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { Nav, Card } from 'react-bootstrap'
+import { Nav, Card, Button } from 'react-bootstrap'
 import { Context1 } from "./../App.js";
 import { addItem } from "../store.js";
 import { useDispatch } from "react-redux";
@@ -19,6 +19,8 @@ function Detail(props) {
   });
   let [fade, setFade] = useState('');
   let dispatch = useDispatch();
+  let [items, setItems] = useState(false);
+
 
   useEffect(() => {
     let a = setTimeout(() => { setAlert(!alerts) }, 2000)
@@ -42,11 +44,18 @@ function Detail(props) {
 
   useEffect(() => {
     let 꺼낸거 = localStorage.getItem('watched')
-    꺼낸거 = new Set(JSON.parse(꺼낸거))
+    꺼낸거 = JSON.parse(꺼낸거)
+    if (꺼낸거.length !== 0) {
+      setItems(true);
+    }
+    꺼낸거 = new Set(꺼낸거)
     꺼낸거.add(찾은상품.id)
     꺼낸거 = [...꺼낸거]
     localStorage.setItem('watched', JSON.stringify(꺼낸거));
   }, [])
+
+  let 최근본상품 = localStorage.getItem('watched');
+  최근본상품 = JSON.parse(최근본상품)
 
     return (
       <div className={"container start "+ fade }>
@@ -75,6 +84,34 @@ function Detail(props) {
                 navigate('/cart')
             }}
             >주문하기</button>
+            <div className="card-wrap">
+              <h4>최근 본 상품</h4>
+              {
+                최근본상품.map((a, i) => {
+                  return(                    
+                    items === true ?
+                      <>
+                        <Card style={{ width: '18rem' }}>
+                          <Card.Img variant="top" src={"https://codingapple1.github.io/shop/shoes" + (최근본상품[i] + 1) + ".jpg"} />
+                          <Card.Body>
+                            <Card.Title>{ props.shoes[최근본상품[i]].title }</Card.Title>
+                            <Card.Text>
+                              {props.shoes[최근본상품[i]].content}
+                            </Card.Text>
+                            <Button variant="primary"
+                              onClick={() => {
+                                navigate('/cart')
+                              }}
+                            >
+                              주문하기
+                            </Button>
+                          </Card.Body>
+                        </Card> 
+                      </> : null
+                  )
+                })
+              }
+            </div>
           </div>
         </div>
 

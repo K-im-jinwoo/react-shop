@@ -1,6 +1,6 @@
 import { useEffect, useState, useContext } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { Nav } from 'react-bootstrap'
+import { Nav, Card } from 'react-bootstrap'
 import { Context1 } from "./../App.js";
 import { addItem } from "../store.js";
 import { useDispatch } from "react-redux";
@@ -40,6 +40,14 @@ function Detail(props) {
     }
   }, [])
 
+  useEffect(() => {
+    let 꺼낸거 = localStorage.getItem('watched')
+    꺼낸거 = new Set(JSON.parse(꺼낸거))
+    꺼낸거.add(찾은상품.id)
+    꺼낸거 = [...꺼낸거]
+    localStorage.setItem('watched', JSON.stringify(꺼낸거));
+  }, [])
+
     return (
       <div className={"container start "+ fade }>
         {
@@ -50,7 +58,7 @@ function Detail(props) {
           <div className="col-md-6">
             <img src={"https://codingapple1.github.io/shop/shoes" + (찾은상품.id+1) + ".jpg"} width="100%" />
           </div>
-          <div className="col-md-6">
+          <div className="col-md-6 detail-wrap">
             <input
               onChange={(e) => (
                 setNum(e.target.value)

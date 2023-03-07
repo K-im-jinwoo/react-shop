@@ -1,4 +1,4 @@
-import { createContext, useState } from 'react';
+import { createContext, useState, useEffect } from 'react';
 import { Container, Navbar, Nav } from 'react-bootstrap'
 import './App.css';
 import data from './data.js';
@@ -10,6 +10,13 @@ import Cart from './routes/Cart.js';
 export let Context1 = createContext()
 
 function App() {
+
+  useEffect(() => {
+    const watched = localStorage.getItem('watched');
+    if (watched === null) {
+      localStorage.setItem('watched', JSON.stringify([]))
+    } 
+  }, [])
 
   let [shoes, setShoes] = useState(data);
   let [count, setCount] = useState(0);
@@ -131,7 +138,9 @@ function List(props) {
 
   return (    
     <div
-      onClick={()=>{navigate('/detail/'+props.shoes.id )}}
+      onClick={() => {
+        navigate('/detail/' + props.shoes.id)
+      }}
       className="col-md-4"
     >
       <img src={"https://codingapple1.github.io/shop/shoes" + props.i + ".jpg"} alt="" width='80%' />

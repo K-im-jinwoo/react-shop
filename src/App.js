@@ -1,12 +1,13 @@
-import { createContext, useState, useEffect } from 'react';
+import { lazy, createContext, useState, useEffect, Suspense } from 'react';
 import { Container, Navbar, Nav } from 'react-bootstrap'
 import './App.css';
 import data from './data.js';
-import Detail from './routes/detail.js'
 import { Routes, Route, Link, useNavigate, Outlet } from 'react-router-dom'
 import { useQuery } from '@tanstack/react-query';
 import axios from 'axios';
-import Cart from './routes/Cart.js';
+
+const Detail = lazy(() => import('./routes/detail.js'));
+const Cart = lazy(() => import('./routes/Cart.js'))
 
 export let Context1 = createContext()
 
@@ -16,7 +17,7 @@ function App() {
     const watched = localStorage.getItem('watched');
     if (watched === null) {
       localStorage.setItem('watched', JSON.stringify([]))
-    } 
+    }
   }, [])
 
   let [shoes, setShoes] = useState(data);
@@ -45,13 +46,12 @@ function App() {
             {result.isLoading && '로딩중'}
             {result.error && '에러남'}
             {result.data && result.data.name}
-
           </Nav>
         </Container>
       </Navbar>
 
 
-      
+
       <Routes>
         <Route path='/' element={<div><>
           <div className='main-bg'></div>
@@ -70,20 +70,22 @@ function App() {
           </div>
         </></div>} />
         <Route path="/detail/:id" element={
-          <Context1.Provider value={{ 재고 }}>
-            <Detail shoes={shoes}></Detail>
-          </Context1.Provider>
-          } />
-        
+          <Suspense fallback={<div>로딩중임</div>}>
+            <Context1.Provider value={{ 재고 }}>
+              <Detail shoes={shoes}></Detail>
+            </Context1.Provider>
+          </Suspense>
+        } />
+
         <Route path='/cart' element={<Cart />} />
 
         <Route path='*' element={<div>없는 페이지요</div>} />
         <Route path='/about' element={<About />} >
-          <Route path="member" element={<div>멤버임</div> } />
+          <Route path="member" element={<div>멤버임</div>} />
           <Route path="location" element={<div>위치정보임</div>} />
         </Route>
         <Route path='/event' element={<Event />}>
-          <Route path="one" element={<div>첫 주문시 양배추즙 서비스</div> } />
+          <Route path="one" element={<div>첫 주문시 양배추즙 서비스</div>} />
           <Route path='two' element={<div>생일기념 쿠폰받기</div>} />
         </Route>
       </Routes>
@@ -99,14 +101,14 @@ function App() {
           axios.get('https://codingapple1.github.io/shop/data2.json')
             .then((result) => {
               let copy = [...shoes, ...result.data];
-              setCount(count+1)
+              setCount(count + 1)
               setShoes(copy)
               setLoading(true);
             })
             .catch(() => {
               console.log('실패')
               setLoading(true);
-          })
+            })
         } else if (count === 1) {
           axios.get('https://codingapple1.github.io/shop/data3.json')
             .then((result) => {
@@ -150,7 +152,7 @@ function Event() {
 function List(props) {
   let navigate = useNavigate();
 
-  return (    
+  return (
     <div
       onClick={() => {
         navigate('/detail/' + props.shoes.id)
@@ -160,7 +162,7 @@ function List(props) {
       <img src={"https://codingapple1.github.io/shop/shoes" + props.i + ".jpg"} alt="" width='80%' />
       <h4>{props.shoes.title}</h4>
       <p>{props.shoes.price}</p>
-  </div>
+    </div>
   )
 }
 
